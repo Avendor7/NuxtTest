@@ -70,7 +70,9 @@ interface Result {
 
 function fetchData() {
     isLoading.value = true;
-    let url = "api/search?value=" + query.value;
+    let baseUrl = process.env.NUXT_PUBLIC_API_BASE_URL || '/api';
+    let url = `${baseUrl}/search?value=${encodeURIComponent(query.value)}`;
+
     console.log(url);
     axios
         .get(url)
@@ -83,7 +85,7 @@ function fetchData() {
         .finally(() => {
             isLoading.value = false;
             hasLoaded.value = true;
-            router.push({ name: 'home', query: { q: query.value } });
+            //router.push({ name: 'home', query: { q: query.value } });
         });
 }
 
