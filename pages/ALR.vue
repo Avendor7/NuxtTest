@@ -138,13 +138,12 @@ const data = ref<Data>({
 
 const isLoading = ref(false);
 const route = useRoute();
-const query = String(route.params.query); // You can also use a type guard for better TypeScript support
-
+const query = String(route.params.query);
+console.log(route.params);
 function fetchData() {
     isLoading.value = true;
-    console.log(query);
-    let url = import.meta.env.VITE_API_URL+"/alr/info?value=" + query;
-    console.log(url);
+    let baseUrl = process.env.NUXT_PUBLIC_API_BASE_URL || '/api';
+    let url = `${baseUrl}/info/alr?value=${encodeURIComponent(query)}`;
     axios
         .get(url)
         .then((response) => {

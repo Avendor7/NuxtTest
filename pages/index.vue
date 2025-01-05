@@ -4,7 +4,7 @@
 
         <color-picker :isOpen="isModalOpened" @modal-close="closeModal"/>
         <div class="inputContainer">
-            <input class="searchBox" type="query" v-model="query" :placeholder="'Search'" @keydown.enter="fetchData">
+            <input class="searchBox" type="text" v-model="query" :placeholder="'Search'" @keydown.enter="fetchData">
             <FontAwesomeIcon @click="openModal" :icon="faGear" class="settingsIcon"/>
         </div>
         <div v-if="hasLoaded" class="resource">
@@ -22,12 +22,14 @@
                 <tr v-for="result in data" :key="result.name">
                     <td>{{ result.source }}</td>
                     <td v-if="result.source == 'ALR'">
-                        <RouterLink :to="{ name: 'ALR', params: { query: result.name }}">
+                        <NuxtLink :to="{ name: 'ALR', params: { query: result.name }}">
                             {{ result.name }}
-                        </RouterLink>
+                        </NuxtLink>
                     </td>
-                    <td v-else="result.source == 'AUR'">
-                        <a href="/AUR">AUR</a>
+                    <td v-else-if="result.source == 'AUR'">
+                        <NuxtLink :to="{ name: 'AUR', params: { query: result.name }}">
+                            {{ result.name }}
+                        </NuxtLink>
                     </td>
                     <td>{{ result.version }}</td>
                     <td>{{ formatDate(result.last_updated_date) }}</td>

@@ -108,7 +108,8 @@ const query = String(route.params.query); // You can also use a type guard for b
 
 function fetchData() {
     isLoading.value = true;
-    let url = import.meta.env.VITE_API_URL+"/aur/info?value=" + query;
+    let baseUrl = process.env.NUXT_PUBLIC_API_BASE_URL || '/api';
+    let url = `${baseUrl}/info/aur?value=${encodeURIComponent(query)}`;
     axios
         .get(url)
         .then((response) => {
