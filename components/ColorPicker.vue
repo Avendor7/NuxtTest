@@ -21,9 +21,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits} from 'vue';
+import { ref, defineProps, defineEmits, onMounted } from 'vue';
 
-const root = "";
 const primaryColour = ref<string>('');
 const currentInputValue = ref<string>('#000000');
 const props = defineProps({
@@ -32,6 +31,7 @@ const props = defineProps({
 const emits = defineEmits(
   ["modal-close"]
 )
+
 //TODO maybe simplify this to a normal array
 const presetColors = [
     {primary: '#B25BFD'},
@@ -42,18 +42,26 @@ const presetColors = [
     {primary: '#FF073A'},
 ];
 
+let root: HTMLStyleElement | null = null;
+
+onMounted(() => {
+  root = document.querySelector(':root') as HTMLStyleElement;
+getPrimary();
+});
+
 function setPrimary(primary: string) {
-    if (root.value) {
-        root.value.style.setProperty('--color-primary', primary);
-        root.value.style.setProperty('--color-primary-shadow', primary + "44");
+    if (root) {
+        root.style.setProperty('--color-primary', primary);
+        root.style.setProperty('--color-primary-shadow', primary + "44");
     }
 }
 
 //TODO this should come from session storage or something in case the user changes the colour.
 function getPrimary(){
-    if (root.value) {
-        let rs = getComputedStyle(root.value);
+    if (root) {
+        let rs = getComputedStyle(root);
         primaryColour.value = rs.getPropertyValue('--color-primary');
+
     }
 }
 
@@ -62,15 +70,13 @@ function calculateBrightness(color: string) {
   const g = parseInt(color.slice(3, 5), 16);
   const b = parseInt(color.slice(5, 7), 16);
 
-  // https://codepen.io/WebSeed/pen/pvgqEq 
+  // https://codepen.io/WebSeed/pen/pvgqEq
   // https://stackoverflow.com/questions/1855884/determine-font-color-based-on-background-color
   const brightness = 1 - (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  
+
 
   return brightness > 0.5 ? 'white' : 'black';
 }
-
-getPrimary();
 
 </script>
 
@@ -147,5 +153,6 @@ button:hover{
 }
 .preset{
     cursor: pointer;
+
 }
 </style>
